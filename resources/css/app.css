@@ -1,0 +1,48 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+@layer base {
+    html {
+        color-scheme: light;
+    }
+
+    html.dark {
+        color-scheme: dark;
+    }
+
+    html.dark body {
+        background-color: #191615;
+        color: #fbf5ef;
+    }
+
+    html.dark input:not([type='checkbox']),
+    html.dark textarea,
+    html.dark select {
+        border-color: #625752;
+        background-color: #3b302c;
+        color: #fbf5ef;
+    }
+
+    html.dark input::placeholder,
+    html.dark textarea::placeholder {
+        color: #a99b91;
+    }
+
+    html.dark input:disabled,
+    html.dark textarea:disabled,
+    html.dark select:disabled {
+        background-color: #302824;
+        color: #a99b91;
+    }
+}

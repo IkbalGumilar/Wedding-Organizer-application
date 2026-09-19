@@ -1,0 +1,134 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+
+@layer components {
+    .fi-simple-layout {
+        min-height: 100vh;
+        background:
+            radial-gradient(circle at 8% 8%, rgb(251 207 232 / 0.7), transparent 28rem),
+            radial-gradient(circle at 92% 90%, rgb(253 230 138 / 0.48), transparent 30rem),
+            #fbf8f4;
+    }
+
+    .fi-simple-main-ctn {
+        padding: 1.5rem;
+    }
+
+    .fi-simple-main.fi-width-lg {
+        width: min(100%, 32rem);
+    }
+
+    .fi-simple-page {
+        border: 1px solid rgb(231 229 228 / 0.9);
+        border-radius: 2rem;
+        background: rgb(255 255 255 / 0.9);
+        box-shadow: 0 2rem 5rem rgb(87 45 35 / 0.12);
+        padding: clamp(1.5rem, 5vw, 2.75rem);
+        backdrop-filter: blur(1rem);
+    }
+
+    .fi-simple-page-content {
+        gap: 2rem;
+    }
+
+    .fi-simple-header {
+        gap: 0.65rem;
+        text-align: center;
+    }
+
+    .fi-simple-header .fi-logo {
+        color: #9f1239;
+        font-family: Georgia, Cambria, 'Times New Roman', serif;
+        font-size: 1.65rem;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+    }
+
+    .fi-simple-header-heading {
+        color: #292524;
+        font-family: Georgia, Cambria, 'Times New Roman', serif;
+        font-size: clamp(1.75rem, 5vw, 2.25rem);
+        font-weight: 600;
+        letter-spacing: -0.025em;
+    }
+
+    .fi-simple-page .fi-fo-field-label-content {
+        color: #57534e;
+        font-weight: 600;
+    }
+
+    .fi-simple-page .fi-input-wrp {
+        border-color: #d6d3d1;
+        border-radius: 0.9rem;
+        background: #fafaf9;
+        transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
+    }
+
+    .fi-simple-page .fi-input-wrp:focus-within {
+        border-color: #e11d48;
+        background: #ffffff;
+        box-shadow: 0 0 0 0.2rem rgb(225 29 72 / 0.12);
+    }
+
+    .fi-simple-page .fi-input {
+        color: #292524;
+    }
+
+    .fi-simple-page .fi-btn {
+        width: 100%;
+        border-radius: 9999px;
+        background: #292524;
+        box-shadow: 0 0.65rem 1.5rem rgb(41 37 36 / 0.16);
+        font-weight: 700;
+        transition: background-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+    }
+
+    .fi-simple-page .fi-btn:hover {
+        background: #9f1239;
+        box-shadow: 0 0.8rem 1.75rem rgb(159 18 57 / 0.2);
+        transform: translateY(-1px);
+    }
+
+    .fi-simple-page .fi-btn:focus-visible {
+        outline: 3px solid rgb(225 29 72 / 0.3);
+        outline-offset: 3px;
+    }
+
+    @media (max-width: 640px) {
+        .fi-simple-main-ctn {
+            padding: 1rem;
+        }
+
+        .fi-simple-page {
+            border-radius: 1.5rem;
+        }
+    }
+
+    .dark .fi-simple-layout {
+        background:
+            radial-gradient(circle at 8% 8%, rgb(159 18 57 / 0.25), transparent 28rem),
+            radial-gradient(circle at 92% 90%, rgb(146 64 14 / 0.2), transparent 30rem),
+            #1c1917;
+    }
+
+    .dark .fi-simple-page {
+        border-color: rgb(120 113 108 / 0.45);
+        background: rgb(41 37 36 / 0.9);
+    }
+
+    .dark .fi-simple-header-heading,
+    .dark .fi-simple-page .fi-input {
+        color: #fafaf9;
+    }
+
+    .dark .fi-simple-page .fi-fo-field-label-content {
+        color: #d6d3d1;
+    }
+
+    .dark .fi-simple-page .fi-input-wrp {
+        border-color: #57534e;
+        background: #292524;
+    }
+}
