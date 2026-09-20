@@ -7,11 +7,9 @@
         <section class="rounded-3xl border border-stone-200 bg-white p-7 shadow-xl shadow-stone-900/5 dark:border-[#625752] dark:bg-[#302824] dark:shadow-black/30 sm:p-10">
             <p class="text-sm font-semibold uppercase tracking-[0.2em] text-rose-700 dark:text-rose-300">Selamat datang kembali</p>
             <h1 class="mt-4 font-serif text-4xl text-stone-900 dark:text-stone-50">Masuk ke akun Anda</h1>
-            <p class="mt-3 text-sm leading-6 text-stone-600 dark:text-stone-300">Lanjutkan dengan akun sosial atau email Anda.</p>
+            <p class="mt-3 text-sm leading-6 text-stone-600 dark:text-stone-300">Masuk menggunakan email dan password Anda.</p>
 
-            <div class="mt-8">
-                <x-social-login-buttons />
-            </div>
+            <x-social-login-buttons />
 
             <form method="POST" action="{{ route('login.store') }}" class="space-y-5">
                 @csrf

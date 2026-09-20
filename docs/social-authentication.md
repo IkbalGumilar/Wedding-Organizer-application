@@ -13,6 +13,16 @@ Pengecekan ini dipusatkan pada `App\Enums\SocialProvider::enabled()`; jangan mem
 Pastikan `.env` memiliki `APP_URL` yang sesuai origin aplikasi dan `APP_KEY` yang stabil.
 Redirect URI di bawah harus memakai origin yang sama persis dengan aplikasi.
 
+UI social login customer dikendalikan terpisah dari backend OAuth. Nilai defaultnya
+`false` agar tombol tidak tampil sebelum provider disetujui dan credential siap.
+
+```dotenv
+SOCIAL_LOGIN_UI_ENABLED=false
+```
+
+Backend route, model, account linking, dan pengujian security tetap tersedia ketika UI
+dinonaktifkan. Set `true` hanya setelah provider yang diperlukan sudah dikonfigurasi.
+
 ```dotenv
 GOOGLE_ENABLED=false
 GOOGLE_CLIENT_ID=

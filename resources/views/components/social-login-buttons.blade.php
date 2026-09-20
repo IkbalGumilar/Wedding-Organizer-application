@@ -4,8 +4,8 @@
     $providers ??= \App\Enums\SocialProvider::enabled();
 @endphp
 
-@if (count($providers))
-    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2" aria-label="Masuk dengan akun sosial">
+@if (config('auth.social_login_ui_enabled') && count($providers))
+    <div class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2" aria-label="Masuk dengan akun sosial">
         @foreach ($providers as $provider)
             <a
                 href="{{ route('social.redirect', $provider->value) }}"

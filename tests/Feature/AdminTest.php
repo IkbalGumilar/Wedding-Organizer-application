@@ -12,11 +12,13 @@ use App\Models\Gallery;
 use App\Models\User;
 use App\Models\WeddingPackage;
 use Filament\Actions\Testing\TestAction;
+use Filament\Auth\Pages\Login as FilamentLogin;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Select;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Testing\File as TestingFile;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -265,6 +267,25 @@ class AdminTest extends TestCase
         foreach ([ManageWeddingPackages::class, ManageGalleries::class, ManageBookings::class, ManageUsers::class] as $component) {
             Livewire::test($component)->assertForbidden();
         }
+    }
+
+    public function test_customer_credentials_are_rejected_by_the_filament_login(): void
+    {
+        auth()->logout();
+
+        $customer = User::factory()->create([
+            'password' => Hash::make('Password123!'),
+        ]);
+
+        Livewire::test(FilamentLogin::class)
+            ->fillForm([
+                'email' => $customer->email,
+                'password' => 'Password123!',
+            ])
+            ->call('authenticate')
+            ->assertHasFormErrors(['email']);
+
+        $this->assertGuest();
     }
 
     public function test_admin_created_customer_email_is_normalized_before_validation_and_can_login(): void

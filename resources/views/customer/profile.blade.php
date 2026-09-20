@@ -4,7 +4,7 @@
 
 @section('content')
     @php
-        $providers = \App\Enums\SocialProvider::enabled();
+        $providers = config('auth.social_login_ui_enabled') ? \App\Enums\SocialProvider::enabled() : [];
         $connectedProviders = $user->socialAccounts->keyBy('provider');
         $showCompletionPrompt = session('social.profile.prompt') && blank($user->phone);
     @endphp

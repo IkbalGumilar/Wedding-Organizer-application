@@ -133,9 +133,27 @@ class FoundationTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $this->actingAs($user)
-            ->get('/admin')
-            ->assertForbidden();
+        $this->actingAs($user);
+
+        foreach (['/admin', '/admin/bookings', '/admin/galleries', '/admin/users', '/admin/wedding-packages'] as $uri) {
+            $this->get($uri)->assertForbidden();
+        }
+
+        $this->get('/admin/register')->assertNotFound();
+    }
+
+    public function test_guest_is_redirected_to_admin_login(): void
+    {
+        $this->get('/admin')->assertRedirect('/admin/login');
+    }
+
+    public function test_authenticated_customer_cannot_use_the_admin_login_page(): void
+    {
+        $customer = User::factory()->create();
+
+        $this->actingAs($customer)
+            ->get('/admin/login')
+            ->assertRedirect('/admin');
     }
 
     public function test_admin_can_access_filament_dashboard(): void
@@ -146,5 +164,16 @@ class FoundationTest extends TestCase
             ->get('/admin')
             ->assertOk()
             ->assertSeeText('Atha Decoration');
+    }
+
+    public function test_admin_can_access_filament_resources(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+
+        $this->actingAs($admin);
+
+        foreach (['/admin/bookings', '/admin/galleries', '/admin/users', '/admin/wedding-packages'] as $uri) {
+            $this->get($uri)->assertOk();
+        }
     }
 }

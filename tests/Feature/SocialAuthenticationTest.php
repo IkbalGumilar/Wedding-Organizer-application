@@ -20,6 +20,8 @@ class SocialAuthenticationTest extends TestCase
     {
         parent::setUp();
 
+        config()->set('auth.social_login_ui_enabled', false);
+
         foreach (['google', 'apple', 'microsoft', 'facebook', 'x'] as $provider) {
             config()->set("services.{$provider}.enabled", true);
             config()->set(
@@ -109,6 +111,8 @@ class SocialAuthenticationTest extends TestCase
 
     public function test_enabled_providers_render_accessible_controls_on_login_and_registration(): void
     {
+        config()->set('auth.social_login_ui_enabled', true);
+
         $login = $this->withoutVite()->get(route('login'))->assertOk();
         $registration = $this->get(route('register'))->assertOk();
 
@@ -128,6 +132,28 @@ class SocialAuthenticationTest extends TestCase
                 ->assertSee('aria-label="'.$label.'"', false);
             $registration->assertSee('data-social-provider="'.$provider.'"', false);
         }
+    }
+
+    public function test_social_login_ui_is_hidden_without_removing_the_backend_routes(): void
+    {
+        config()->set('auth.social_login_ui_enabled', false);
+
+        $login = $this->withoutVite()->get(route('login'))->assertOk();
+        $registration = $this->get(route('register'))->assertOk();
+        $profile = $this->actingAs(User::factory()->create())->get(route('profile.edit'))->assertOk();
+
+        foreach ([$login, $registration, $profile] as $response) {
+            $response
+                ->assertDontSee('data-social-provider=', false)
+                ->assertDontSee('Masuk dengan akun sosial', false)
+                ->assertDontSee('Lanjutkan dengan', false);
+        }
+
+        $this->assertTrue(
+            collect(app('router')->getRoutes()->getRoutesByName())
+                ->keys()
+                ->contains('social.redirect'),
+        );
     }
 
     public function test_google_provider_with_an_invalid_client_id_is_not_reachable_or_rendered(): void

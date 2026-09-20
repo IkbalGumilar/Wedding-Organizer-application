@@ -20,6 +20,8 @@ return [
         'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
     ],
 
+    'social_login_ui_enabled' => env('SOCIAL_LOGIN_UI_ENABLED', false),
+
     /*
     |--------------------------------------------------------------------------
     | Authentication Guards
