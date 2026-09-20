@@ -20,6 +20,17 @@ class FoundationTest extends TestCase
         }
     }
 
+    public function test_https_forwarded_requests_generate_https_urls(): void
+    {
+        $response = $this->withHeaders([
+            'Host' => 'public.example.test',
+            'X-Forwarded-Host' => 'public.example.test',
+            'X-Forwarded-Proto' => 'https',
+        ])->withoutVite()->get('/');
+
+        $response->assertSee('href="https://public.example.test/tentang-kami"', false);
+    }
+
     public function test_authentication_pages_are_available_and_dashboard_requires_login(): void
     {
         $this->withoutVite()
