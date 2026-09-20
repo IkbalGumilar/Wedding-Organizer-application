@@ -165,3 +165,23 @@ Untuk setiap provider yang sudah dikonfigurasi, uji manual:
 
 Automated test memakai fake provider dan tidak memanggil provider nyata. Credentials
 provider yang belum tersedia tetap aman karena tombolnya tidak dirender.
+
+## Troubleshooting Google `invalid_client`
+
+Jika Google menampilkan `401 invalid_client` atau `The OAuth client was not found`,
+periksa hal berikut sebelum mengubah kode aplikasi:
+
+1. `GOOGLE_CLIENT_ID` berasal dari OAuth 2.0 Client ID dengan tipe **Web application**;
+   API key, client Android, dan client Desktop tidak dapat menggantikannya.
+2. Nilai client ID harus berakhiran `.apps.googleusercontent.com` dan client secret
+   harus berasal dari client yang sama pada project Google Cloud.
+3. Authorized redirect URI harus sama persis dengan nilai aplikasi. Untuk server lokal
+   saat ini gunakan:
+
+   `http://127.0.0.1:8000/auth/google/callback`
+
+   `localhost` dan `127.0.0.1` adalah origin berbeda.
+4. Setelah memperbaiki `.env`, jalankan `php artisan optimize:clear` lalu buka ulang
+   halaman login. Provider dengan konfigurasi invalid akan disembunyikan oleh aplikasi.
+
+Jangan menaruh client secret di repository atau mengirimkannya pada laporan error.

@@ -24,19 +24,27 @@ enum SocialProvider: string
     public function isEnabled(): bool
     {
         $config = config('services.'.$this->value, []);
+        $clientId = trim((string) ($config['client_id'] ?? ''));
+        $redirect = trim((string) ($config['redirect'] ?? ''));
 
-        if (! ($config['enabled'] ?? false) || blank($config['client_id'] ?? null) || blank($config['redirect'] ?? null)) {
+        if (! ($config['enabled'] ?? false)
+            || ! $this->hasConfiguredValue($clientId)
+            || ! $this->hasConfiguredValue($redirect)) {
+            return false;
+        }
+
+        if ($this === self::Google && ! preg_match('/^[A-Za-z0-9._-]+\.apps\.googleusercontent\.com$/', $clientId)) {
             return false;
         }
 
         if ($this === self::Apple) {
-            return filled($config['client_secret'] ?? null)
-                || (filled($config['key_id'] ?? null)
-                    && filled($config['team_id'] ?? null)
-                    && filled($config['private_key'] ?? null));
+            return $this->hasConfiguredValue($config['client_secret'] ?? null)
+                || ($this->hasConfiguredValue($config['key_id'] ?? null)
+                    && $this->hasConfiguredValue($config['team_id'] ?? null)
+                    && $this->hasConfiguredValue($config['private_key'] ?? null));
         }
 
-        return filled($config['client_secret'] ?? null);
+        return $this->hasConfiguredValue($config['client_secret'] ?? null);
     }
 
     public function usesCookieNonce(): bool
@@ -58,5 +66,20 @@ enum SocialProvider: string
     public static function enabled(): array
     {
         return array_values(array_filter(self::cases(), fn (self $provider): bool => $provider->isEnabled()));
+    }
+
+    private function hasConfiguredValue(mixed $value): bool
+    {
+        $value = strtolower(trim((string) $value));
+
+        return $value !== '' && ! in_array($value, [
+            '...',
+            'changeme',
+            'replace-me',
+            'client-id-asli.apps.googleusercontent.com',
+            'client-secret-asli',
+            'your-client-id',
+            'your-client-secret',
+        ], true);
     }
 }

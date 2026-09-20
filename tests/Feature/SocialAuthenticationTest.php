@@ -22,7 +22,12 @@ class SocialAuthenticationTest extends TestCase
 
         foreach (['google', 'apple', 'microsoft', 'facebook', 'x'] as $provider) {
             config()->set("services.{$provider}.enabled", true);
-            config()->set("services.{$provider}.client_id", 'test-client-id');
+            config()->set(
+                "services.{$provider}.client_id",
+                $provider === 'google'
+                    ? '1234567890-test-client.apps.googleusercontent.com'
+                    : 'test-client-id',
+            );
             config()->set("services.{$provider}.client_secret", 'test-client-secret');
             config()->set("services.{$provider}.redirect", 'https://example.test/auth/'.$provider.'/callback');
         }
@@ -107,6 +112,11 @@ class SocialAuthenticationTest extends TestCase
         $login = $this->withoutVite()->get(route('login'))->assertOk();
         $registration = $this->get(route('register'))->assertOk();
 
+        $login
+            ->assertSee('grid-cols-1', false)
+            ->assertSee('w-full', false)
+            ->assertSee('whitespace-nowrap', false);
+
         foreach (['google', 'apple', 'microsoft', 'facebook', 'x'] as $provider) {
             $label = 'Lanjutkan dengan '.match ($provider) {
                 'x' => 'X',
@@ -118,6 +128,24 @@ class SocialAuthenticationTest extends TestCase
                 ->assertSee('aria-label="'.$label.'"', false);
             $registration->assertSee('data-social-provider="'.$provider.'"', false);
         }
+    }
+
+    public function test_google_provider_with_an_invalid_client_id_is_not_reachable_or_rendered(): void
+    {
+        config()->set('services.google.client_id', 'client-id-asli.apps.googleusercontent.com');
+        config()->set('services.google.client_secret', 'client-secret-asli');
+
+        $this->get(route('social.redirect', 'google'))->assertNotFound();
+        $this->get(route('social.callback', 'google'))->assertNotFound();
+        $this->withoutVite()->get(route('login'))->assertDontSee('data-social-provider="google"', false);
+    }
+
+    public function test_valid_google_configuration_can_start_the_socialite_redirect(): void
+    {
+        $this->fakeSocialUser('google', ['id' => 'google-customer-1']);
+
+        $this->get(route('social.redirect', 'google'))
+            ->assertRedirect('https://socialite.fake/google/authorize');
     }
 
     public function test_an_unverified_social_email_is_not_used_as_a_local_login_email(): void
